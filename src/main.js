@@ -2,11 +2,18 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
+
 import router from './router'
 import ElementUI from 'element-ui';
+import MyServerHttp from '@/plugins/http.js'
 import 'element-ui/lib/theme-chalk/index.css';
-
-Vue.use(ElementUI);
+import '@/assets/css/reset.css'
+// 旧的用法axios
+// import axiox from 'axios'
+// Vue.prototype.$http=axiox
+// 使用vue的插件
+Vue.use(ElementUI)
+Vue.use(MyServerHttp)
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
