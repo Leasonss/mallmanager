@@ -9,7 +9,7 @@
       <el-row class="searchRow">
         <el-col>
           <el-input placeholder="请输入内容" v-model="query" class="selectSearch">
-            <el-button slot="append" icon="el-icon-search"></el-button>
+            <el-button @click="searchUser" slot="append" icon="el-icon-search"></el-button>
           </el-input>
           <el-button type="success">添加用户</el-button>
         </el-col>
@@ -39,6 +39,15 @@
       </el-table>
       <!-- 分页 -->
     </el-breadcrumb>
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="pagenum"
+      :page-sizes="[2, 4, 6, 8]"
+      :page-size="2"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total">
+    </el-pagination>
   </el-card>
 </template>
 <script>
@@ -58,6 +67,12 @@ export default {
     this.getUserList();
   },
   methods: {
+    // 搜索用户
+      searchUser(){
+        this.getUserList()
+      },
+
+// 获取数据刷新数据
     async getUserList() {
       const AUTH_TOKEN = localStorage.getItem("token");
       this.$http.defaults.headers.common["Authorization"] = AUTH_TOKEN;
@@ -75,7 +90,19 @@ export default {
         this.$message.success("获取数据成功！");
       }
       console.log(res);
-    }
+    },
+    // 分页方法
+    handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+        this.pagesize=val//赋值每页传进来多少条
+        this.pagenum=1//每次点击了页数规定多少条后回到首页开始排版
+        this.getUserList()//每页规定页数后重新获取排版
+      },
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+        this.pagenum=val
+        this.getUserList()
+      }
   }
 };
 </script>
