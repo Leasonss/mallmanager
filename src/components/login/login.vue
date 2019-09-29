@@ -43,6 +43,8 @@ export default {
                           }=res.data
                           if(status===200){
                             // 登录成功会有提示出现
+                            // 保存token 验证登录否则返回原来的登录页面
+                            localStorage.setItem('token', data.token)
                             this.$router.push({name:'home'})
                             this.$message.success(msg)
                           }
