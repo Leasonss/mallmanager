@@ -18,15 +18,24 @@
       <el-table :data="userList" style="width: 100%">
         <el-table-column type="index" label="#" width="60"></el-table-column>
         <el-table-column prop="username" label="姓名" width="80"></el-table-column>
-        <el-table-column prop="email" label="邮箱"></el-table-column>
+        <el-table-column prop="email" label="邮箱">
+        </el-table-column>
         <el-table-column prop="mobile" label="电话"></el-table-column>
         <el-table-column prop="create_time" label="创建时间">
-            <template slot-scope="userList">
-                {{userList.row.create_time|fmtdate}}
-            </template>
+          <template slot-scope="userList">{{userList.row.create_time|fmtdate}}</template>
         </el-table-column>
-        <el-table-column prop="role_name" label="用户状态"></el-table-column>
-        <el-table-column prop="role_name" label="操作"></el-table-column>
+        <el-table-column label="用户状态">
+          <template slot-scope="scope">
+            <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column prop="role_name" label="操作">
+          <template slot-scope="scope">
+              <el-button plain size="mini" type="primary" icon="el-icon-edit" circle></el-button>
+              <el-button plain size="mini" type="danger" icon="el-icon-delete" circle></el-button>
+              <el-button plain size="mini" type="success" icon="el-icon-check" circle></el-button>
+            </template>
+          </el-table-column>
       </el-table>
       <!-- 分页 -->
     </el-breadcrumb>
@@ -37,9 +46,9 @@ export default {
   data() {
     return {
       query: "",
-    // 表格绑定的数据
+      // 表格绑定的数据
       userList: [],
-    //分页   
+      //分页
       total: -1,
       pagenum: 1,
       pagesize: 2
@@ -55,12 +64,15 @@ export default {
       const res = await this.$http.get(
         `users?query=${this.query}&pagenum=${this.pagenum}&pagesize=${this.pagesize}`
       );
-      const {meta:{mag,status},data:{total,users}}=res.data
-      if(status===200){
+      const {
+        meta: { mag, status },
+        data: { total, users }
+      } = res.data;
+      if (status === 200) {
         //   给表格,total赋值，获取数据成功提示框
-        this.userList=users
-        this.total=total
-        this.$message.success('获取数据成功！')
+        this.userList = users;
+        this.total = total;
+        this.$message.success("获取数据成功！");
       }
       console.log(res);
     }
