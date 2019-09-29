@@ -12,7 +12,7 @@
         </el-col>
         <el-col :span="2">
           <div class="grid-content bg-purple">
-            <a class="loginout" href="#">退出</a>
+            <a class="loginout" @click.prevent="handleSiglogin" href="#">退出</a>
           </div>
         </el-col>
       </el-row>
@@ -98,14 +98,20 @@ export default {
     beforeCreate(){
         const token = localStorage.getItem('token')
         if(!token){
+            // token 不存在,回到login
             this.$router.push({
                 name:'login'
             })
+            // token存在继续渲染
+        }
+    },
+    methods:{
+        handleSiglogin(){
+            localStorage.clear()
+            this.$message.success("退出成功！")
+            this.$router.push({name:'login'})
         }
     }
-
-
-
 };
 </script>
 
