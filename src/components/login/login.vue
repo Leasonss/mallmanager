@@ -33,13 +33,13 @@ export default {
        }
    },
    methods:{
-     handleLogin(){
-             this.$http.post('login',this.formData)
-                       .then((res)=>{
+    //  简化代码让代码看起来像是同步的
+     async handleLogin(){
+           const res= await this.$http.post('login',this.formData)
+                       
                           // console.log(res);
-                          const {
-                            // 赋值
-                            data,meta:{msg,status}
+                          // this和then异步操作
+                          const {data,meta:{msg,status}
                           }=res.data
                           if(status===200){
                             // 登录成功会有提示出现
@@ -49,11 +49,36 @@ export default {
                           else{
                             // 登录失败也会有提示根据状态码
                             this.$message.warning(msg);
-                            
                           }
 
-                       })
      }
+
+
+
+
+
+    //  handleLogin(){
+    //          this.$http.post('login',this.formData)
+    //                    .then((res)=>{
+    //                       // console.log(res);
+    //                       // this和then异步操作
+    //                       const {
+    //                         // 赋值
+    //                         data,meta:{msg,status}
+    //                       }=res.data
+    //                       if(status===200){
+    //                         // 登录成功会有提示出现
+    //                         this.$router.push({name:'home'})
+    //                         this.$message.success(msg)
+    //                       }
+    //                       else{
+    //                         // 登录失败也会有提示根据状态码
+    //                         this.$message.warning(msg);
+                            
+    //                       }
+
+    //                    })
+    //  }
    }
 }
 </script>
