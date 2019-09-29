@@ -15,14 +15,18 @@
         </el-col>
       </el-row>
       <!-- 表格 -->
-      <el-table :data="tableData" style="width: 100%">
+      <el-table :data="userList" style="width: 100%">
         <el-table-column type="index" label="#" width="60"></el-table-column>
-        <el-table-column prop="name" label="姓名" width="80"></el-table-column>
-        <el-table-column prop="address" label="邮箱"></el-table-column>
-        <el-table-column prop="address" label="电话"></el-table-column>
-        <el-table-column prop="address" label="创建时间"></el-table-column>
-        <el-table-column prop="address" label="用户状态"></el-table-column>
-        <el-table-column prop="address" label="操作"></el-table-column>
+        <el-table-column prop="username" label="姓名" width="80"></el-table-column>
+        <el-table-column prop="email" label="邮箱"></el-table-column>
+        <el-table-column prop="mobile" label="电话"></el-table-column>
+        <el-table-column prop="create_time" label="创建时间">
+            <template slot-scope="userList">
+                {{userList.row.create_time|fmtdate}}
+            </template>
+        </el-table-column>
+        <el-table-column prop="role_name" label="用户状态"></el-table-column>
+        <el-table-column prop="role_name" label="操作"></el-table-column>
       </el-table>
       <!-- 分页 -->
     </el-breadcrumb>
@@ -33,46 +37,35 @@ export default {
   data() {
     return {
       query: "",
-      pagenum:1,
-      pagesize:2,
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄"
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄"
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄"
-        }
-      ]
+    // 表格绑定的数据
+      userList: [],
+    //分页   
+      total: -1,
+      pagenum: 1,
+      pagesize: 2
     };
   },
-
   created() {
     this.getUserList();
   },
   methods: {
     async getUserList() {
-      const AUTH_TOKEN=localStorage.getItem('token')
-      this.$http.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-      const res = await this.$http.get
-      ('users?query=${this.query}&pagenum=${this.pagenum}&pagesize=${this.pagesize}')
-      Console.log(res);
+      const AUTH_TOKEN = localStorage.getItem("token");
+      this.$http.defaults.headers.common["Authorization"] = AUTH_TOKEN;
+      const res = await this.$http.get(
+        `users?query=${this.query}&pagenum=${this.pagenum}&pagesize=${this.pagesize}`
+      );
+      const {meta:{mag,status},data:{total,users}}=res.data
+      if(status===200){
+        //   给表格,total赋值，获取数据成功提示框
+        this.userList=users
+        this.total=total
+        this.$message.success('获取数据成功！')
+      }
+      console.log(res);
     }
   }
-}
+};
 </script>
 <style>
 .box-card {

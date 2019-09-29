@@ -8,6 +8,7 @@ import ElementUI from 'element-ui';
 import MyServerHttp from '@/plugins/http.js'
 import 'element-ui/lib/theme-chalk/index.css';
 import '@/assets/css/reset.css'
+import moment from 'moment'
 // 旧的用法axios
 // import axiox from 'axios'
 // Vue.prototype.$http=axiox
@@ -15,6 +16,13 @@ import '@/assets/css/reset.css'
 Vue.use(ElementUI)
 Vue.use(MyServerHttp)
 Vue.config.productionTip = false
+
+
+
+// 全局过滤器时间格式处理
+Vue.filter("fmtdate",(v)=>{
+  return moment(v).format('YYYY-MM-DD')
+})
 
 /* eslint-disable no-new */
 new Vue({
