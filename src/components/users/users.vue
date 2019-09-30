@@ -37,7 +37,9 @@
         <el-table-column prop="role_name" label="操作">
           <template>
             <el-button plain size="mini" type="primary" icon="el-icon-edit" circle></el-button>
-            <el-button plain size="mini" type="danger" icon="el-icon-delete" circle></el-button>
+            <el-button plain size="mini" type="danger" icon="el-icon-delete" circle
+            @click="showDeleteMessage()"
+            ></el-button>
             <el-button plain size="mini" type="success" icon="el-icon-check" circle></el-button>
           </template>
         </el-table-column>
@@ -54,27 +56,28 @@
       :total="total"
     ></el-pagination>
 
-    <!-- 编辑删除弹窗 -->
-    <el-dialog title="添加用户" :visible.sync="dialogFormVisibleAdd">
-      <el-form :model="form">
-        <el-form-item   label="用户名" label-width="100px">
-          <el-input v-model="form.usernme"  autocomplete="off"></el-input>
-        </el-form-item>
-         <el-form-item  label="密码 " label-width="100px">
-          <el-input v-model="form.password" autocomplete="off"></el-input>
-        </el-form-item>
-         <el-form-item  label="邮箱" label-width="100px">
-          <el-input v-model="form.email" autocomplete="off"></el-input>
-        </el-form-item>
-         <el-form-item  label="电话" label-width="100px">
-          <el-input v-model="form.mobile" autocomplete="off"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
-        <el-button type="primary" @click="addUser">确 定</el-button>
-      </div>
-    </el-dialog>
+    <!-- 添加用户弹窗 -->
+    <el-dialog title="添加用户" :visible.sync="dialogFormVisibleADD">
+  <el-form :model="form">
+    <el-form-item label="用户名" label-width="100px">
+      <el-input v-model="form.username" autocomplete="off"></el-input>
+    </el-form-item>
+     <el-form-item label="密码" label-width="100px">
+      <el-input v-model="form.password" autocomplete="off"></el-input>
+    </el-form-item>
+     <el-form-item label="邮箱" label-width="100px">
+      <el-input v-model="form.email" autocomplete="off"></el-input>
+    </el-form-item>
+     <el-form-item label="手机号" label-width="100px">
+      <el-input v-model="form.mobile" autocomplete="off"></el-input>
+    </el-form-item>
+  </el-form>
+  <div slot="footer" class="dialog-footer">
+    <el-button @click="dialogFormVisibleADD = false">取 消</el-button>
+    <el-button type="primary" @click="addUsers">确 定</el-button>
+  </div>
+</el-dialog>
+    
   </el-card>
 </template>
 <script>
@@ -88,12 +91,13 @@ export default {
       total: -1,
       pagenum: 1,
       pagesize: 2,
-      dialogFormVisibleAdd:false,
+      dialogFormVisibleADD:false,
+      // 用户表单
       form:{
-         usernme:'',
-         password:'',
-         email:'',
-         mobile:''
+          username:'',
+          password:'',
+          email:'',
+          mobile:''
       }
     }
   },
@@ -102,17 +106,33 @@ export default {
   },
   methods: {
     // 添加用户发送请求
-     async addUser(){
-      this.dialogFormVisibleAdd=false
-      const res = await this.$http.post(`users`,this.form)
+    async addUsers(){
+      const res=await this.$http.post(`users`,this.form)
       console.log(res)
-     
-      },
+      const {data,meta:{msg,status}}=res.data
+      if(status===201){
+        // 1.提示成功
+        this.$message.success(msg)
+        // 2.重新获取数据
+        this.getUserList()
+        // 3.置空
+        this.form={}
+        // for(const key in this.form){
+        //   if(this.form.hasOwnProperty(key)){
+        //     this.form[key]=""
+        //   }
+        // }
+        // 4.关闭屏幕
+        this.dialogFormVisibleADD=false
+      }
+      else{
+        this.$$message.warning(msg)
+      }
+    },
     // 点击之后显示添加对话框
     showAddDialog(){
-      this.dialogFormVisibleAdd=true
+        this.dialogFormVisibleADD = true
     },
-
     // 输入框清空后重新获取数据
     clearGetUser() {
       this.getUserList();
