@@ -127,17 +127,20 @@
          {{"你好"}}
         </el-form-item>
         <el-form-item label="角色" label-width="100px">
-          <el-select v-model="bangding">
-            <el-option label="角色" :value="-1"></el-option>
-             <el-option :label="item" :value="i"
-             v-for="(item,i) in 5" :key="i"
-             ></el-option>
+          <el-select v-model="bangdingxianshi">
+            <el-option label="请选择" :value="-1"></el-option>
+             <el-option 
+             :label="item.roleName"
+             :value="item.id"
+             v-for="(item,i) in roles" 
+             :key="i">
+             </el-option>
           </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormRole = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormRole = false">确 定</el-button>
+        <el-button type="primary" @click="setRole()">确 定</el-button>
       </div>
     </el-dialog>
   </el-card>
@@ -163,15 +166,34 @@ export default {
         email: "",
         mobile: ""
       },
-      bangding:0
+      bangdingxianshi:-1,
+      userputRoleId:-1,
+      userUserRoleId:'',
+      // 保存所有的用户角色数据
+      roles:[]
     };
   },
   created() {
     this.getUserList();
   },
   methods: {
-    // 分配角色
-    async showsetRoleDia() {
+    // 分配角色-发送请求
+    async setRole(){
+      // 请求路径：users/:id/role
+      const res=await this.$http.put()
+    },
+    // 分配角色打开对话框
+    async showsetRoleDia(user) {
+      this.userUserRoleId=user.username
+      this.userputRoleId=user.id
+      // 获取当前所有角色
+      const res1=await this.$http.get(`roles`)
+      console.log(res1)
+      // 获取当前用户的id里面的角色-->rid
+        this.roles=res1.data.data
+        const res =await this.$http.get(`users/${user.id}`)
+        // 赋值到用户角色然后进行遍历
+        this.bangdingxianshi=res.data.data.rid
         this.dialogFormRole=true
     },
     // 改变用户状态
