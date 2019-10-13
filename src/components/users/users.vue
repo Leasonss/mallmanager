@@ -124,7 +124,7 @@
     <el-dialog title="分配角色" :visible.sync="dialogFormRole">
       <el-form :model="form">
         <el-form-item label="用户名" label-width="100px">
-         {{"你好"}}
+         {{userUserName}}
         </el-form-item>
         <el-form-item label="角色" label-width="100px">
           <el-select v-model="bangdingxianshi">
@@ -180,6 +180,7 @@ export default {
     // 分配角色-发送请求
     async setRole(){
       // 请求路径：users/:id/role
+      // 进行当前选中角色替换
       const res=await this.$http.put(`users/${this.userputRoleId}/role`,{
         rid:this.bangdingxianshi
       })
@@ -187,7 +188,9 @@ export default {
     },
     // 分配角色打开对话框
     async showsetRoleDia(user) {
+      // 获取显示用户角色的名字username
       this.userUserName=user.username
+      // 获取到角色id
       this.userputRoleId=user.id
       // 获取当前所有角色
       const res1=await this.$http.get(`roles`)
@@ -300,8 +303,9 @@ export default {
 
     // 获取数据刷新数据
     async getUserList() {
-      const AUTH_TOKEN = localStorage.getItem("token");
-      this.$http.defaults.headers.common["Authorization"] = AUTH_TOKEN;
+      // 获取token值权限
+      // const AUTH_TOKEN = localStorage.getItem("token");
+      // this.$http.defaults.headers.common["Authorization"] = AUTH_TOKEN;
       const res = await this.$http.get(
         `users?query=${this.query}&pagenum=${this.pagenum}&pagesize=${this.pagesize}`
       );
