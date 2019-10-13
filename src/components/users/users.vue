@@ -168,7 +168,7 @@ export default {
       },
       bangdingxianshi:-1,
       userputRoleId:-1,
-      userUserRoleId:'',
+      userUserName:'',
       // 保存所有的用户角色数据
       roles:[]
     };
@@ -180,11 +180,14 @@ export default {
     // 分配角色-发送请求
     async setRole(){
       // 请求路径：users/:id/role
-      const res=await this.$http.put()
+      const res=await this.$http.put(`users/${this.userputRoleId}/role`,{
+        rid:this.bangdingxianshi
+      })
+      this.dialogFormRole=false
     },
     // 分配角色打开对话框
     async showsetRoleDia(user) {
-      this.userUserRoleId=user.username
+      this.userUserName=user.username
       this.userputRoleId=user.id
       // 获取当前所有角色
       const res1=await this.$http.get(`roles`)
@@ -193,6 +196,7 @@ export default {
         this.roles=res1.data.data
         const res =await this.$http.get(`users/${user.id}`)
         // 赋值到用户角色然后进行遍历
+        console.log(res)
         this.bangdingxianshi=res.data.data.rid
         this.dialogFormRole=true
     },
