@@ -4,7 +4,13 @@
       <el-row>
         <el-col :span="4">
           <div class="grid-content bg-purple">
-            <img src="../../assets/tubo.jpg" width="200px" height="60px" alt="无法显示图片" style="border-radius:30px"/>
+            <img
+              src="../../assets/tubo.jpg"
+              width="200px"
+              height="60px"
+              alt="无法显示图片"
+              style="border-radius:30px"
+            />
           </div>
         </el-col>
         <el-col :span="18" class="middle">
@@ -20,78 +26,17 @@
     <el-container>
       <el-aside class="aside" width="200px">
         <!-- 侧边栏开启路由模式 -->
-        <el-menu
-         :router="true"
-         :unique-opened="true">
-        <!-- 侧边栏，上面是控制整个侧边栏的下拉状态 -->
-          <!-- 1 -->
-          <el-submenu index="1">
+        <el-menu :router="true" :unique-opened="true">
+          <!-- 侧边栏，上面是控制整个侧边栏的下拉状态 -->
+          <!-- 1 :index动态绑定路由的标识跳转-->
+          <el-submenu :index="''+item1.order" v-for="(item1,i) in menus" :key="i">
             <template slot="title">
               <i class="el-icon-location"></i>
-              <span>用户管理</span>
+              <span>{{item1.authName}}</span>
             </template>
-            <el-menu-item index="users">
+            <el-menu-item :index="item2.path" v-for="(item2,i) in item1.children" :key="i">
               <i class="el-icon-menu"></i>
-              <span>用户列表</span>
-            </el-menu-item>
-          </el-submenu>
-          <!-- 2 -->
-          <el-submenu index="2">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>权限管理</span>
-            </template>
-            <el-menu-item index="role">
-              <i class="el-icon-menu"></i>
-              <span>角色列表</span>
-            </el-menu-item>
-            <el-menu-item index="right">
-              <i class="el-icon-menu"></i>
-              <span>权限列表</span>
-            </el-menu-item>
-          </el-submenu>
-          <!-- 3 -->
-          <el-submenu index="3">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>博客管理</span>
-            </template>
-            <el-menu-item index="1-1">
-              <i class="el-icon-menu"></i>
-              <span>选项一</span>
-            </el-menu-item>
-          </el-submenu>
-          <!-- 4 -->
-          <el-submenu index="4">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>标签管理</span>
-            </template>
-            <el-menu-item index="1-1">
-              <i class="el-icon-menu"></i>
-              <span>选项一</span>
-            </el-menu-item>
-          </el-submenu>
-          <!-- 5 -->
-          <el-submenu index="5">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>数据统计</span>
-            </template>
-            <el-menu-item index="1-1">
-              <i class="el-icon-menu"></i>
-              <span>选项一</span>
-            </el-menu-item>
-          </el-submenu>
-          <!-- 6 -->
-          <el-submenu index="6">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>评价管理</span>
-            </template>
-            <el-menu-item index="1-1">
-              <i class="el-icon-menu"></i>
-              <span>选项一</span>
+              <span>{{item2.authName}}</span>
             </el-menu-item>
           </el-submenu>
         </el-menu>
@@ -105,23 +50,37 @@
 
 <script>
 export default {
-    beforeCreate(){
-        const token = localStorage.getItem('token')
-        if(!token){
-            // token 不存在,回到login
-            this.$router.push({
-                name:'login'
-            })
-            // token存在继续渲染
-        }
+  data() {
+    return {
+      menus: []
+    };
+  },
+  // beforeCreate() {
+  //   const token = localStorage.getItem("token");
+  //   if (!token) {
+  //     // token 不存在,回到login
+  //     this.$router.push({
+  //       name: "login"
+  //     });
+  //     // token存在继续渲染
+  //   }
+  // },
+  created() {
+    this.getMenu();
+  },
+  methods: {
+    // 从后台获取所有的后台管理列表
+    async getMenu() {
+      const res = await this.$http.get(`menus`);
+      console.log(res);
+      this.menus = res.data.data;
     },
-    methods:{
-        handleSiglogin(){
-            localStorage.clear()
-            this.$message.success("退出成功！")
-            this.$router.push({name:'login'})
-        }
+    handleSiglogin() {
+      localStorage.clear();
+      this.$message.success("退出成功！");
+      this.$router.push({ name: "login" });
     }
+  }
 };
 </script>
 
